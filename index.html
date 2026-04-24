@@ -1,95 +1,187 @@
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Extract CSV to Excel (PyScript)</title>
-    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
-    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
-</head>
-<body>
-    <h1>Extract CSV to Excel</h1>
-    <form id="csv-form" onsubmit="return false;">
-        <label for="csv-file">Upload CSV file:</label>
-        <input type="file" id="csv-file" accept=".csv"><br><br>
 
-        <label for="pass-type">Select pass type:</label>
-        <select id="pass-type">
-            <option value="1">Pass 1</option>
-            <option value="2">Pass 2</option>
-        </select><br><br>
+<style>
+  .container { padding: 2rem 0; max-width: 560px; }
+  .step { margin-bottom: 1.75rem; }
+  .label { font-size: 13px; color: var(--color-text-secondary); font-weight: 500; margin-bottom: 6px; letter-spacing: 0.03em; text-transform: uppercase; }
+  .drop-zone { border: 1.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: background 0.15s; background: var(--color-background-secondary); }
+  .drop-zone:hover, .drop-zone.drag-over { background: var(--color-background-tertiary); border-color: var(--color-border-primary); }
+  .drop-zone.loaded { border-style: solid; border-color: var(--color-border-success); background: var(--color-background-success); }
+  .drop-zone p { margin: 0; font-size: 14px; color: var(--color-text-secondary); }
+  .drop-zone .file-name { font-weight: 500; font-size: 14px; color: var(--color-text-success); margin-top: 4px; }
+  .pass-toggle { display: flex; gap: 10px; }
+  .pass-btn { flex: 1; padding: 10px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); font-size: 14px; font-weight: 500; cursor: pointer; color: var(--color-text-secondary); transition: all 0.12s; }
+  .pass-btn:hover { background: var(--color-background-secondary); }
+  .pass-btn.active { border: 2px solid var(--color-border-info); color: var(--color-text-info); background: var(--color-background-info); }
+  .cols-preview { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; min-height: 32px; }
+  .col-tag { font-size: 12px; padding: 3px 10px; border-radius: 20px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
+  .col-tag.resolved { background: var(--color-background-info); color: var(--color-text-info); border-color: var(--color-border-info); }
+  .col-tag.error { background: var(--color-background-danger); color: var(--color-text-danger); border-color: var(--color-border-danger); }
+  .name-row { display: flex; gap: 8px; align-items: center; }
+  .name-row input { flex: 1; height: 36px; }
+  .ext { font-size: 13px; color: var(--color-text-secondary); white-space: nowrap; }
+  .export-btn { width: 100%; padding: 12px; border-radius: var(--border-radius-md); border: none; font-size: 15px; font-weight: 500; cursor: pointer; background: var(--color-text-primary); color: var(--color-background-primary); transition: opacity 0.12s; }
+  .export-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .export-btn:not(:disabled):hover { opacity: 0.85; }
+  .status { margin-top: 10px; font-size: 13px; padding: 8px 12px; border-radius: var(--border-radius-md); display: none; }
+  .status.error { background: var(--color-background-danger); color: var(--color-text-danger); display: block; }
+  .status.success { background: var(--color-background-success); color: var(--color-text-success); display: block; }
+  #file-input { display: none; }
+</style>
 
-        <label for="output-name">Excel file name:</label>
-        <input type="text" id="output-name" value="output.xlsx"><br><br>
+<h2 class="sr-only">CSV column extractor — upload a CSV, choose Pass 1 or Pass 2, set a filename, and download as Excel.</h2>
 
-        <button id="process-btn" type="button">Process and Download Excel</button>
-    </form>
-    <div id="status"></div>
+<div class="container">
+  <div class="step">
+    <div class="label">1 — CSV file</div>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <p id="drop-text">Click to select a CSV file</p>
+      <p class="file-name" id="file-name-display"></p>
+    </div>
+    <input type="file" id="file-input" accept=".csv">
+  </div>
 
-    <py-config>
-        packages = ["pandas", "openpyxl"]
-    </py-config>
+  <div class="step">
+    <div class="label">2 — Pass type</div>
+    <div class="pass-toggle">
+      <button class="pass-btn" id="btn-pass1" onclick="selectPass(1)">Pass 1</button>
+      <button class="pass-btn" id="btn-pass2" onclick="selectPass(2)">Pass 2</button>
+    </div>
+    <div class="cols-preview" id="cols-preview">
+      <span style="font-size:13px;color:var(--color-text-secondary);align-self:center;">Select a pass to preview columns</span>
+    </div>
+  </div>
 
-    <py-script>
-        import pandas as pd
-        import io
-        from js import document, Blob, URL, FileReader
+  <div class="step">
+    <div class="label">3 — Output file name</div>
+    <div class="name-row">
+      <input type="text" id="output-name" placeholder="output" value="output">
+      <span class="ext">.xlsx</span>
+    </div>
+  </div>
 
-        def process_csv(*args):
-            status = document.getElementById("status")
-            file_input = document.getElementById("csv-file")
-            pass_type = document.getElementById("pass-type").value
-            output_name = document.getElementById("output-name").value or "output.xlsx"
+  <button class="export-btn" id="export-btn" disabled onclick="exportFile()">Download .xlsx</button>
+  <div class="status" id="status"></div>
+</div>
 
-            if not file_input.files.length:
-                status.innerText = "Please upload a CSV file."
-                return
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+let parsedResults = null;
+let selectedPass = null;
 
-            file = file_input.files.item(0)
-            
-            def onload(evt):
-                try:
-                    csv_text = evt.target.result
-                    df = pd.read_csv(io.StringIO(csv_text))
-                    available_columns = list(df.columns)
-                    if pass_type == "1":
-                        selected_indexes = [32, 8, 9, 1, 3, 7]
-                    else:
-                        selected_indexes = [17, 1, 3, 7, 15, 13, 57, 20, 43]
-                    if any(idx < 1 or idx > len(available_columns) for idx in selected_indexes):
-                        status.innerText = "One or more requested column positions are out of range for this CSV."
-                        return
-                    columns = [available_columns[idx-1] for idx in selected_indexes]
-                    missing = [col for col in columns if col not in df.columns]
-                    if missing:
-                        status.innerText = f"These columns were not found: {', '.join(missing)}"
-                        return
-                    # Write to Excel in memory
-                    output = io.BytesIO()
-                    df.loc[:, columns].to_excel(output, index=False)
-                    output.seek(0)
-                    # Get bytes from buffer
-                    excel_bytes = output.getvalue()
-                    # Create blob and download
-                    blob = Blob.new([excel_bytes], {"type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})
-                    url = URL.createObjectURL(blob)
-                    a = document.createElement("a")
-                    a.href = url
-                    a.download = output_name
-                    a.click()
-                    URL.revokeObjectURL(url)
-                    status.innerText = f"Excel file '{output_name}' generated and downloaded."
-                except Exception as e:
-                    status.innerText = f"Error: {e}"
+const PASS_INDEXES = {
+  1: [32, 8, 9, 1, 3, 7],
+  2: [17, 1, 3, 7, 15, 13, 57, 20, 43]
+};
 
-            reader = FileReader.new()
-            reader.onload = onload
-            reader.readAsText(file)
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
 
-        # Bind button click after Python loads
-        from pyodide.ffi import create_proxy
-        btn = document.getElementById("process-btn")
-        btn.addEventListener("click", create_proxy(process_csv))
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) handleFile(file);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
-    </py-script>
-</body>
-</html>
+function handleFile(file) {
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    showStatus('Please select a .csv file.', 'error');
+    return;
+  }
+  Papa.parse(file, {
+    header: false,
+    skipEmptyLines: true,
+    complete: function(results) {
+      parsedResults = results.data;
+      document.getElementById('file-name-display').textContent = file.name;
+      document.getElementById('drop-text').textContent = 'File loaded:';
+      dropZone.classList.add('loaded');
+      updatePreview();
+      checkReady();
+      hideStatus();
+    },
+    error: function(err) {
+      showStatus('Failed to parse CSV: ' + err.message, 'error');
+    }
+  });
+}
+
+function getHeaders() {
+  if (!parsedResults || !parsedResults.length) return [];
+  return parsedResults[0];
+}
+
+function selectPass(n) {
+  selectedPass = n;
+  document.getElementById('btn-pass1').classList.toggle('active', n === 1);
+  document.getElementById('btn-pass2').classList.toggle('active', n === 2);
+  updatePreview();
+  checkReady();
+}
+
+function updatePreview() {
+  const container = document.getElementById('cols-preview');
+  if (!selectedPass) {
+    container.innerHTML = '<span style="font-size:13px;color:var(--color-text-secondary);align-self:center;">Select a pass to preview columns</span>';
+    return;
+  }
+  const indexes = PASS_INDEXES[selectedPass];
+  const headers = getHeaders();
+  container.innerHTML = indexes.map(idx => {
+    if (!headers.length) return `<span class="col-tag">column ${idx}</span>`;
+    const col = headers[idx - 1];
+    if (col === undefined || col === null || col === '') return `<span class="col-tag error">col ${idx} (out of range)</span>`;
+    return `<span class="col-tag resolved">${col}</span>`;
+  }).join('');
+}
+
+function checkReady() {
+  const ready = parsedResults !== null && selectedPass !== null;
+  document.getElementById('export-btn').disabled = !ready;
+}
+
+function exportFile() {
+  if (!parsedResults || !selectedPass) return;
+
+  const headers = parsedResults[0];
+  const dataRows = parsedResults.slice(1);
+  const indexes = PASS_INDEXES[selectedPass];
+
+  const outOfRange = indexes.filter(i => i > headers.length || i < 1);
+  if (outOfRange.length) {
+    showStatus(`Column positions out of range: ${outOfRange.join(', ')}. This CSV only has ${headers.length} columns.`, 'error');
+    return;
+  }
+
+  // Build output: for each selected column index, grab the header and all values for that column only
+  const colIndices = indexes.map(i => i - 1);
+  const selectedHeaders = colIndices.map(ci => headers[ci]);
+
+  const wsRows = [selectedHeaders];
+  for (const row of dataRows) {
+    wsRows.push(colIndices.map(ci => (ci < row.length ? row[ci] : '')));
+  }
+
+  const ws = XLSX.utils.aoa_to_sheet(wsRows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+  const nameInput = document.getElementById('output-name').value.trim() || 'output';
+  XLSX.writeFile(wb, nameInput + '.xlsx');
+  showStatus(`Downloaded "${nameInput}.xlsx" — ${selectedHeaders.length} columns, ${dataRows.length} rows.`, 'success');
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + type;
+}
+function hideStatus() {
+  document.getElementById('status').className = 'status';
+}
+</script>
