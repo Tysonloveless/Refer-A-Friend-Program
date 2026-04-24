@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,7 +21,7 @@
         <label for="output-name">Excel file name:</label>
         <input type="text" id="output-name" value="output.xlsx"><br><br>
 
-        <button id="process-btn" type="button" pys-onClick="process_csv">Process and Download Excel</button>
+        <button id="process-btn" type="button">Process and Download Excel</button>
     </form>
     <div id="status"></div>
 
@@ -30,10 +31,10 @@
 
     <py-script>
         import pandas as pd
-        from pyodide.ffi import to_js
-        from js import document, Blob, URL
+        import io
+        from js import document, Blob, URL, FileReader
 
-        def process_csv(event=None):
+        def process_csv(*args):
             status = document.getElementById("status")
             file_input = document.getElementById("csv-file")
             pass_type = document.getElementById("pass-type").value
@@ -44,10 +45,11 @@
                 return
 
             file = file_input.files.item(0)
+            
             def onload(evt):
                 try:
                     csv_text = evt.target.result
-                    df = pd.read_csv(pd.compat.StringIO(csv_text))
+                    df = pd.read_csv(io.StringIO(csv_text))
                     available_columns = list(df.columns)
                     if pass_type == "1":
                         selected_indexes = [32, 8, 9, 1, 3, 7]
@@ -62,12 +64,13 @@
                         status.innerText = f"These columns were not found: {', '.join(missing)}"
                         return
                     # Write to Excel in memory
-                    import io
                     output = io.BytesIO()
                     df.loc[:, columns].to_excel(output, index=False)
                     output.seek(0)
-                    # Download
-                    blob = Blob.new([output.getvalue()], {"type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})
+                    # Get bytes from buffer
+                    excel_bytes = output.getvalue()
+                    # Create blob and download
+                    blob = Blob.new([excel_bytes], {"type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"})
                     url = URL.createObjectURL(blob)
                     a = document.createElement("a")
                     a.href = url
@@ -78,9 +81,14 @@
                 except Exception as e:
                     status.innerText = f"Error: {e}"
 
-            reader = __new__(js.FileReader())
+            reader = FileReader.new()
             reader.onload = onload
             reader.readAsText(file)
+
+        # Bind button click after Python loads
+        from pyodide.ffi import create_proxy
+        btn = document.getElementById("process-btn")
+        btn.addEventListener("click", create_proxy(process_csv))
 
     </py-script>
 </body>
