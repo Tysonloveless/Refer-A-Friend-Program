@@ -43,64 +43,31 @@ body { margin: 0; }
 .pass-card.active .pass-card-title { color: #0C447C; }
 .pass-card-meta { font-size: 12px; color: var(--color-text-secondary); margin: 0; }
 .pass-card.active .pass-card-meta { color: #185FA5; }
-
-/* Cols section */
 .cols-section { margin-top: 12px; }
 .cols-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .cols-label { font-size: 11px; color: var(--color-text-tertiary); letter-spacing: 0.04em; text-transform: uppercase; margin: 0; }
 .cols-hint { font-size: 11px; color: var(--color-text-tertiary); display: flex; align-items: center; gap: 4px; }
 .cols-hint svg { width: 11px; height: 11px; stroke: var(--color-text-tertiary); fill: none; stroke-width: 2; stroke-linecap: round; }
-
-/* Draggable pill area */
-.cols-wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  min-height: 32px;
-  padding: 6px;
-  border-radius: var(--border-radius-md);
-  border: 1px dashed transparent;
-  transition: border-color 0.12s, background 0.12s;
-}
-.cols-wrap.drag-active {
-  border-color: var(--color-border-secondary);
-  background: var(--color-background-secondary);
-}
-.col-pill {
-  font-size: 11px;
-  padding: 4px 9px 4px 6px;
-  border-radius: 20px;
-  border: 0.5px solid var(--color-border-tertiary);
-  color: var(--color-text-secondary);
-  background: var(--color-background-secondary);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: grab;
-  user-select: none;
-  transition: box-shadow 0.1s, opacity 0.1s;
-}
+.cols-wrap { display: flex; flex-wrap: wrap; gap: 5px; min-height: 32px; padding: 6px; border-radius: var(--border-radius-md); border: 1px dashed transparent; transition: border-color 0.12s, background 0.12s; }
+.cols-wrap.drag-active { border-color: var(--color-border-secondary); background: var(--color-background-secondary); }
+.col-pill { font-size: 11px; padding: 4px 9px 4px 6px; border-radius: 20px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); background: var(--color-background-secondary); display: flex; align-items: center; gap: 4px; cursor: grab; user-select: none; transition: box-shadow 0.1s, opacity 0.1s; }
 .col-pill:active { cursor: grabbing; }
 .col-pill.resolved { background: #E6F1FB; color: #0C447C; border-color: #85B7EB; }
 .col-pill.excluded { background: #F5F5F5; color: #999; border-color: #DDD; text-decoration: line-through; cursor: default; }
 .col-pill.err { background: #FCEBEB; color: #A32D2D; border-color: #F09595; cursor: default; }
-.col-pill.ghost-placeholder { opacity: 0; pointer-events: none; }
-.col-pill.dragging { opacity: 0.4; box-shadow: none; }
+.col-pill.dragging { opacity: 0.4; }
 .col-pill.drag-over-left { border-left: 2px solid #185FA5; }
 .col-pill.drag-over-right { border-right: 2px solid #185FA5; }
-
 .drag-handle { display: flex; flex-direction: column; gap: 2px; opacity: 0.45; flex-shrink: 0; }
 .drag-handle span { display: block; width: 10px; height: 1.5px; border-radius: 1px; background: currentColor; }
-
-/* filter toggle row */
+.not-found-note { margin-top: 8px; font-size: 11px; padding: 5px 10px; border-radius: var(--border-radius-md); background: #FAEEDA; color: #633806; border: 0.5px solid #EF9F27; display: none; }
+.not-found-note.visible { display: block; }
 .filter-row { margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .filter-label-group { display: flex; flex-direction: column; gap: 2px; }
 .filter-label { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
 .filter-desc { font-size: 11px; color: var(--color-text-secondary); }
 .filter-badge { margin-top: 8px; font-size: 11px; padding: 3px 9px; border-radius: 20px; background: #FAEEDA; color: #633806; border: 0.5px solid #EF9F27; display: none; }
 .filter-badge.visible { display: inline-block; }
-
-/* column exclusion dropdown */
 .exclude-section { margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--color-border-tertiary); }
 .exclude-trigger { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 8px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); transition: background 0.12s; user-select: none; }
 .exclude-trigger:hover { background: var(--color-background-tertiary); }
@@ -125,7 +92,6 @@ body { margin: 0; }
 .exclude-item-label { font-size: 12px; color: var(--color-text-primary); flex: 1; }
 .exclude-item-idx { font-size: 11px; color: var(--color-text-tertiary); flex-shrink: 0; }
 .exclude-item.unchecked .exclude-item-label { color: var(--color-text-secondary); text-decoration: line-through; opacity: 0.6; }
-
 .name-row { display: flex; gap: 8px; align-items: center; }
 .name-row input { flex: 1; }
 .ext-badge { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); white-space: nowrap; }
@@ -147,6 +113,7 @@ body { margin: 0; }
     <p>Select columns by pass type and export as a formatted Excel file.</p>
   </div>
   <div class="steps">
+
     <div class="card">
       <div class="card-header">
         <div class="step-num" id="num1">1</div>
@@ -181,11 +148,11 @@ body { margin: 0; }
       <div class="pass-grid" id="pass-grid">
         <div class="pass-card" id="pc1" onclick="selectPass(1)">
           <p class="pass-card-title">Pass 1</p>
-          <p class="pass-card-meta">10 columns extracted</p>
+          <p class="pass-card-meta">6 columns by name</p>
         </div>
         <div class="pass-card" id="pc2" onclick="selectPass(2)">
           <p class="pass-card-title">Pass 2</p>
-          <p class="pass-card-meta">9 columns extracted</p>
+          <p class="pass-card-meta">11 columns by name</p>
         </div>
       </div>
 
@@ -193,18 +160,19 @@ body { margin: 0; }
         <div class="cols-section-header">
           <p class="cols-label" id="cols-label">Columns to extract</p>
           <span class="cols-hint">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 5 19 12"/><polyline points="5 12 12 19 19 12" transform="translate(0,0)"/></svg>
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 5 19 12"/><polyline points="5 12 12 19 19 12"/></svg>
             drag to reorder
           </span>
         </div>
         <div class="cols-wrap" id="cols-wrap"></div>
+        <div class="not-found-note" id="not-found-note"></div>
       </div>
 
       <div id="pass2-filter">
         <div class="filter-row">
           <div class="filter-label-group">
             <span class="filter-label">Exclude "true" rows</span>
-            <span class="filter-desc">Remove rows where column 17 equals "true"</span>
+            <span class="filter-desc">Remove rows where "linkedinIsOpenToWorkBadge" equals "true"</span>
           </div>
           <div class="toggle-wrap">
             <input type="checkbox" class="toggle-input" id="filter-toggle" onchange="onToggleChange()">
@@ -250,6 +218,7 @@ body { margin: 0; }
         <div class="status-pill" id="status"></div>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -260,11 +229,39 @@ let parsedResults = null;
 let selectedPass = null;
 let allColsMode = false;
 let columnIncluded = {};
-// columnOrder: array of position indexes (into the base indexes array) representing current order
-let columnOrder = [];
+let columnOrder = []; // indices into resolvedColumns[]
 
-const PASS_INDEXES = { 1: [23,3,4,2,7,8,1,10,11,13], 2: [17,1,3,7,15,13,57,20,43] };
-const COL17_INDEX = 16;
+// resolvedColumns: array of { name, colIndex (0-based), found }
+// built fresh each time pass or file changes
+let resolvedColumns = [];
+
+// Pass definitions: ordered list of name aliases (first match wins, case-insensitive)
+const PASS_NAMES = {
+  1: [
+    ['defaultProfileUrl', 'ProfileUrl'],
+    ['firstName'],
+    ['lastName'],
+    ['Full Name', 'Name'],
+    ['Title'],
+    ['companyName'],
+  ],
+  2: [
+    ['defaultProfileUrl', 'ProfileUrl'],
+    ['firstName'],
+    ['lastName'],
+    ['linkedinIsOpenToWorkBadge'],
+    ['Full Name', 'Name'],
+    ['companyName'],
+    ['Title'],
+    ['linkedinHeadline'],
+    ['linkedinDescription'],
+    ['linkedinJobDescription'],
+    ['linkedinSkillsLabel'],
+  ]
+};
+
+// Column name used for the "exclude true rows" filter
+const FILTER_COL_NAME = 'linkedinIsOpenToWorkBadge';
 
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
@@ -289,7 +286,7 @@ function handleFile(file) {
       dropZone.classList.add('loaded');
       document.getElementById('num1').classList.add('done');
       document.getElementById('num1').textContent = '✓';
-      if (allColsMode || selectedPass) { initColumnState(); updatePreview(); }
+      if (allColsMode || selectedPass) { initColumnState(); buildExcludeList(); updatePreview(); }
       updateFilterBadge();
       checkReady();
       hideStatus();
@@ -298,18 +295,42 @@ function handleFile(file) {
   });
 }
 
-function getBaseIndexes() {
-  if (allColsMode && parsedResults) return (parsedResults[0]||[]).map((_,i) => i+1);
-  if (selectedPass) return PASS_INDEXES[selectedPass];
+// ── Column resolution ────────────────────────────────────────────────────────
+
+// For a pass, resolve each name-group to a column index in the CSV (or -1 if not found)
+function resolvePassColumns(passNum) {
+  const headers = parsedResults ? parsedResults[0].map(h => h.trim()) : [];
+  const groups = PASS_NAMES[passNum];
+  return groups.map(aliases => {
+    for (const alias of aliases) {
+      const idx = headers.findIndex(h => h.toLowerCase() === alias.toLowerCase());
+      if (idx !== -1) return { name: headers[idx], colIndex: idx, found: true };
+    }
+    // Not found — show the first alias as the label
+    return { name: aliases[0], colIndex: -1, found: false };
+  });
+}
+
+// For all-cols mode, every header is a column
+function resolveAllColumns() {
+  const headers = parsedResults ? parsedResults[0] : [];
+  return headers.map((h, i) => ({ name: h || `Column ${i+1}`, colIndex: i, found: true }));
+}
+
+function getResolvedColumns() {
+  if (allColsMode && parsedResults) return resolveAllColumns();
+  if (selectedPass) return resolvePassColumns(selectedPass);
   return [];
 }
 
 function initColumnState() {
-  const base = getBaseIndexes();
+  resolvedColumns = getResolvedColumns();
   columnIncluded = {};
-  columnOrder = base.map((_,i) => i);
-  base.forEach((_,i) => { columnIncluded[i] = true; });
+  columnOrder = resolvedColumns.map((_, i) => i);
+  resolvedColumns.forEach((_, i) => { columnIncluded[i] = true; });
 }
+
+// ── Pass / mode selection ────────────────────────────────────────────────────
 
 function onAllColsToggle() {
   allColsMode = document.getElementById('all-cols-toggle').checked;
@@ -352,105 +373,97 @@ function selectPass(n) {
   checkReady();
 }
 
-// ── Drag-and-drop reordering ──────────────────────────────────────────────────
-let dragSrcPos = null; // index within columnOrder being dragged
+// ── Pill drag-and-drop ───────────────────────────────────────────────────────
+let dragSrcPos = null;
 
 function buildPills() {
   const wrap = document.getElementById('cols-wrap');
-  const base = getBaseIndexes();
-  const headers = parsedResults ? parsedResults[0] : [];
-
   wrap.innerHTML = '';
 
-  columnOrder.forEach((baseIdx, pos) => {
-    const colNum = base[baseIdx];           // 1-based CSV column number
-    const included = columnIncluded[baseIdx] !== false;
-    const colName = headers.length ? (headers[colNum-1] || `Column ${colNum}`) : `Column ${colNum}`;
-    const isErr = headers.length && (!headers[colNum-1] && headers[colNum-1] !== 0);
+  columnOrder.forEach((rcIdx, pos) => {
+    const rc = resolvedColumns[rcIdx];
+    const included = columnIncluded[rcIdx] !== false;
+    const isErr = !rc.found;
 
     const pill = document.createElement('div');
     pill.className = 'col-pill ' + (isErr ? 'err' : included ? 'resolved' : 'excluded');
     pill.dataset.pos = pos;
-    pill.draggable = !isErr;
+    pill.draggable = !isErr && included;
 
     if (!isErr && included) {
-      pill.innerHTML = `<span class="drag-handle"><span></span><span></span><span></span></span>${colName}`;
+      pill.innerHTML = `<span class="drag-handle"><span></span><span></span><span></span></span>${rc.name}`;
     } else {
-      pill.innerHTML = colName;
+      pill.innerHTML = rc.name + (isErr ? ' <em style="opacity:.6;font-style:normal">(not found)</em>' : '');
     }
 
-    // Drag events — only for included, non-error pills
     if (!isErr && included) {
       pill.addEventListener('dragstart', e => {
         dragSrcPos = pos;
         pill.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
-        document.getElementById('cols-wrap').classList.add('drag-active');
+        wrap.classList.add('drag-active');
       });
       pill.addEventListener('dragend', () => {
         pill.classList.remove('dragging');
-        document.querySelectorAll('.col-pill').forEach(p => p.classList.remove('drag-over-left','drag-over-right'));
-        document.getElementById('cols-wrap').classList.remove('drag-active');
+        wrap.querySelectorAll('.col-pill').forEach(p => p.classList.remove('drag-over-left','drag-over-right'));
+        wrap.classList.remove('drag-active');
         dragSrcPos = null;
       });
       pill.addEventListener('dragover', e => {
         e.preventDefault();
         if (dragSrcPos === null || pos === dragSrcPos) return;
-        document.querySelectorAll('.col-pill').forEach(p => p.classList.remove('drag-over-left','drag-over-right'));
-        const rect = pill.getBoundingClientRect();
-        const mid = rect.left + rect.width / 2;
+        wrap.querySelectorAll('.col-pill').forEach(p => p.classList.remove('drag-over-left','drag-over-right'));
+        const mid = pill.getBoundingClientRect().left + pill.getBoundingClientRect().width / 2;
         pill.classList.add(e.clientX < mid ? 'drag-over-left' : 'drag-over-right');
       });
-      pill.addEventListener('dragleave', () => {
-        pill.classList.remove('drag-over-left','drag-over-right');
-      });
+      pill.addEventListener('dragleave', () => pill.classList.remove('drag-over-left','drag-over-right'));
       pill.addEventListener('drop', e => {
         e.preventDefault();
         if (dragSrcPos === null || dragSrcPos === pos) return;
-        const rect = pill.getBoundingClientRect();
-        const mid = rect.left + rect.width / 2;
+        const mid = pill.getBoundingClientRect().left + pill.getBoundingClientRect().width / 2;
         const insertAfter = e.clientX >= mid;
         const dragged = columnOrder.splice(dragSrcPos, 1)[0];
-        let targetPos = columnOrder.indexOf(columnOrder.find((_,i) => {
-          // find the current pos of the target pill after splice
-          return i === (dragSrcPos < pos ? pos - 1 : pos);
-        }));
-        // Simpler: recalculate target index after splice
         let newPos = dragSrcPos < pos ? pos - 1 : pos;
         if (insertAfter) newPos += 1;
         columnOrder.splice(newPos, 0, dragged);
         buildPills();
       });
     }
-
     wrap.appendChild(pill);
   });
+
+  // Show warning for any not-found columns (pass mode only)
+  const notFoundNote = document.getElementById('not-found-note');
+  if (!allColsMode && resolvedColumns.some(rc => !rc.found)) {
+    const missing = resolvedColumns.filter(rc => !rc.found).map(rc => rc.name);
+    notFoundNote.textContent = `Column${missing.length > 1 ? 's' : ''} not found in CSV: ${missing.join(', ')}`;
+    notFoundNote.classList.add('visible');
+  } else {
+    notFoundNote.classList.remove('visible');
+  }
 }
 
 function updatePreview() {
   const section = document.getElementById('cols-section');
   const label = document.getElementById('cols-label');
-  const base = getBaseIndexes();
-  if (!base.length) { section.style.display = 'none'; return; }
+  if (!resolvedColumns.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
-  label.textContent = allColsMode ? `All columns (${base.length})` : 'Columns to extract';
+  label.textContent = allColsMode ? `All columns (${resolvedColumns.length})` : 'Columns to extract';
   buildPills();
 }
 
-// ── Exclude panel ─────────────────────────────────────────────────────────────
+// ── Exclude panel ────────────────────────────────────────────────────────────
 function buildExcludeList() {
-  const base = getBaseIndexes();
-  if (!base.length) { document.getElementById('exclude-list').innerHTML = ''; updateExcludeUI(); return; }
-  const headers = parsedResults ? parsedResults[0] : [];
+  if (!resolvedColumns.length) { document.getElementById('exclude-list').innerHTML = ''; updateExcludeUI(); return; }
   const list = document.getElementById('exclude-list');
-  base.forEach((_,i) => { if (columnIncluded[i] === undefined) columnIncluded[i] = true; });
-  list.innerHTML = base.map((colIdx, i) => {
-    const name = headers.length ? (headers[colIdx-1] || `Column ${colIdx}`) : `Column ${colIdx}`;
+  resolvedColumns.forEach((rc, i) => { if (columnIncluded[i] === undefined) columnIncluded[i] = true; });
+  list.innerHTML = resolvedColumns.map((rc, i) => {
     const checked = columnIncluded[i] !== false;
+    const notFound = !rc.found ? ' <em style="opacity:.5;font-style:normal">(not found)</em>' : '';
     return `<div class="exclude-item ${checked ? '' : 'unchecked'}" id="excl-item-${i}" onclick="toggleColumn(${i})">
       <input type="checkbox" ${checked ? 'checked' : ''} id="excl-cb-${i}" onclick="event.stopPropagation(); toggleColumn(${i})">
-      <span class="exclude-item-label">${name}</span>
-      <span class="exclude-item-idx">col ${colIdx}</span>
+      <span class="exclude-item-label">${rc.name}${notFound}</span>
+      <span class="exclude-item-idx">${rc.found ? 'col '+(rc.colIndex+1) : '—'}</span>
     </div>`;
   }).join('');
   updateExcludeUI();
@@ -465,21 +478,19 @@ function toggleColumn(i) {
 }
 
 function setAllColumns(include) {
-  const base = getBaseIndexes();
-  base.forEach((_,i) => { columnIncluded[i] = include; });
+  resolvedColumns.forEach((_, i) => { columnIncluded[i] = include; });
   buildExcludeList();
   buildPills();
 }
 
 function updateExcludeUI() {
-  const base = getBaseIndexes();
-  const excluded = base.filter((_,i) => columnIncluded[i] === false).length;
+  const excluded = resolvedColumns.filter((_, i) => columnIncluded[i] === false).length;
   const countBadge = document.getElementById('exclude-count');
   const label = document.getElementById('col-count-label');
   if (excluded > 0) {
     countBadge.textContent = excluded + ' excluded';
     countBadge.classList.add('visible');
-    label.textContent = (base.length - excluded) + ' of ' + base.length + ' columns included';
+    label.textContent = (resolvedColumns.length - excluded) + ' of ' + resolvedColumns.length + ' columns included';
   } else {
     countBadge.classList.remove('visible');
     label.textContent = 'All columns included';
@@ -492,18 +503,23 @@ function toggleExcludePanel() {
   chevron.classList.toggle('open', panel.classList.toggle('open'));
 }
 
+// ── Filter badge ─────────────────────────────────────────────────────────────
 function onToggleChange() { updateFilterBadge(); }
 
 function updateFilterBadge() {
   const badge = document.getElementById('filter-badge');
   const active = document.getElementById('filter-toggle').checked;
   if (!active || !parsedResults || selectedPass !== 2 || allColsMode) { badge.classList.remove('visible'); return; }
+  const headers = parsedResults[0].map(h => h.trim().toLowerCase());
+  const filterIdx = headers.findIndex(h => h === FILTER_COL_NAME.toLowerCase());
+  if (filterIdx === -1) { badge.textContent = `Column "${FILTER_COL_NAME}" not found — filter will have no effect.`; badge.classList.add('visible'); return; }
   const dataRows = parsedResults.slice(1);
-  const removed = dataRows.filter(r => (r[COL17_INDEX]||'').toString().trim().toLowerCase() === 'true').length;
-  badge.textContent = removed + ' row' + (removed!==1?'s':'') + ' removed · ' + (dataRows.length-removed) + ' row' + ((dataRows.length-removed)!==1?'s':'') + ' remaining';
+  const removed = dataRows.filter(r => (r[filterIdx]||'').toString().trim().toLowerCase() === 'true').length;
+  badge.textContent = removed + ' row' + (removed!==1?'s':'') + ' removed · ' + (dataRows.length-removed) + ' remaining';
   badge.classList.add('visible');
 }
 
+// ── Ready / export ───────────────────────────────────────────────────────────
 function checkReady() {
   const ready = parsedResults && (allColsMode || selectedPass);
   document.getElementById('export-btn').disabled = !ready;
@@ -514,21 +530,20 @@ function exportFile() {
   if (!parsedResults || (!allColsMode && !selectedPass)) return;
   const headers = parsedResults[0];
   let dataRows = parsedResults.slice(1);
-  const base = getBaseIndexes();
 
-  if (!allColsMode) {
-    const oob = base.filter(i => i > headers.length || i < 1);
-    if (oob.length) { showStatus('Columns out of range: ' + oob.join(', '), 'error'); return; }
-  }
+  // Apply pass2 "exclude true" filter by column name
   if (!allColsMode && selectedPass === 2 && document.getElementById('filter-toggle').checked) {
-    dataRows = dataRows.filter(r => (r[COL17_INDEX]||'').toString().trim().toLowerCase() !== 'true');
+    const filterIdx = headers.map(h => h.trim().toLowerCase()).findIndex(h => h === FILTER_COL_NAME.toLowerCase());
+    if (filterIdx !== -1) {
+      dataRows = dataRows.filter(r => (r[filterIdx]||'').toString().trim().toLowerCase() !== 'true');
+    }
   }
 
-  // Build ordered, included-only column list using columnOrder
-  const orderedActive = columnOrder.filter(baseIdx => columnIncluded[baseIdx] !== false);
-  if (!orderedActive.length) { showStatus('No columns selected — include at least one column.', 'error'); return; }
+  // Build ordered active column list
+  const orderedActive = columnOrder.filter(rcIdx => columnIncluded[rcIdx] !== false && resolvedColumns[rcIdx].found);
+  if (!orderedActive.length) { showStatus('No valid columns selected — include at least one found column.', 'error'); return; }
 
-  const colIs = orderedActive.map(baseIdx => base[baseIdx] - 1); // 0-based CSV col positions
+  const colIs = orderedActive.map(rcIdx => resolvedColumns[rcIdx].colIndex);
   const wsRows = [colIs.map(ci => headers[ci])];
   for (const row of dataRows) wsRows.push(colIs.map(ci => ci < row.length ? row[ci] : ''));
 
